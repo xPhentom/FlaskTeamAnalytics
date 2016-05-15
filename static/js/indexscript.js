@@ -75,17 +75,18 @@ $(document).ready(function() {
 
         $.ajax({
             type: "POST",
-            url: "php/inlogstudent.php",
+            url: "/",
             data: {
                 mail: mail,
                 paswoord: paswoord
             },
+            type: 'POST',
             /*Stuur variabelen door naar loginstudent.php*/
             success: function(html) {
 
                 if (html === "1") {
                     console.log('inloggen gelukt');
-                    window.location.href = "http://wouterroozeleer.me/teamanalytics/student/dashboard.html";
+                    window.location.href = "http://127.0.0.1:5000/student/dashboard.html";
                 } else {
                     console.log(html);
                 }

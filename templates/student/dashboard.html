@@ -5,8 +5,8 @@
     <!--Import Google Icon Font-->
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="../css/materialize.min.css" media="screen,projection" />
-    <link type="text/css" rel="stylesheet" href="../css/style.css" />
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/materialize.min.css') }}" media="screen,projection">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
     <!--Laat de browser weten dat het geoptimalizeerd is voor mobiel-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
@@ -16,7 +16,7 @@
     <nav>
 
         <div class="nav-wrapper">
-            <div id="logoclick"><img id="logo" class="brand-logo" alt="logo" src="../logo.png"></div>
+            <div id="logoclick"><img id="logo" class="brand-logo" alt="logo" src="{{ url_for('static', filename='logo.png') }}"></div>
             <ul class="right nav-mobile hide-on-med-and-down">
                 <li>
                     <div id="gotoStudentLogin" class="waves-effect navItems">Student</a>
@@ -195,9 +195,10 @@
 
     <!--Import jQuery voor materialize.js-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="../js/materialize.min.js"></script>
-    <script type="text/javascript" src="../js/studentdashboardscript.js"></script>
-    <script type="text/javascript" src="../js/Chart.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/studentdashboardscript.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/Chart.js') }}"></script>
+
 </body>
 
 </html>
