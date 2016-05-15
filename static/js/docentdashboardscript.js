@@ -52,7 +52,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "POST",
-            url: "../php/studenttoevoegen.php",
+            url: "/studenttoevoegen",
             data: {
                 voornaam: voornaam,
                 achternaam: achternaam,

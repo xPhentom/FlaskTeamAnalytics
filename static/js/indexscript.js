@@ -45,7 +45,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "POST",
-            url: "php/inlogdocent.php",
+            url: "/inlogdocent",
             data: {
                 mail: mail,
                 paswoord: paswoord
@@ -55,7 +55,7 @@ $(document).ready(function() {
 
                 if (html === "1") {
                     console.log('inloggen gelukt');
-                    window.location.href = "http://wouterroozeleer.me/teamanalytics/docent/dashboard.html";
+                    window.location.href = "http://127.0.0.1:5000/docent/dashboard.html";
                 } else {
                     console.log(html);
                 }
@@ -75,7 +75,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "POST",
-            url: "/",
+            url: "/inlogstudent",
             data: {
                 mail: mail,
                 paswoord: paswoord
