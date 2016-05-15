@@ -18,8 +18,8 @@ $(document).ready(function() {
         $("#QuizResultaatScherm").hide();
 
         $.ajax({
-            type: 'POST',
-            url: '../belbintest.json',
+            type: 'GET',
+            url: '/belbintestjson',
             data: {},
             dataType: 'json',
             success: function(jsonData) {
@@ -45,9 +45,7 @@ $(document).ready(function() {
                 }
                 $("#QuizScherm").append('</div>');
             },
-            error: function() {
-                console.log("Vragen kunnen niet opgehaald worden");
-            }
+
         });
 
 
@@ -120,7 +118,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "POST",
-            url: "../php/rolopslaan.php",
+            url: "/roltoevoegen",
             data: {
                 rol: maxnaam
             },
