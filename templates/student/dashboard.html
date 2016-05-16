@@ -19,10 +19,7 @@
             <div id="logoclick"><img id="logo" class="brand-logo" alt="logo" src="{{ url_for('static', filename='logo.png') }}"></div>
             <ul class="right nav-mobile hide-on-med-and-down">
                 <li>
-                    <div id="gotoStudentLogin" class="waves-effect navItems">Student</a>
-                </li>
-                <li>
-                    <div id="gotoDocentLogin" class="waves-effect navItems">Docent</a>
+                    <div id="gotoStudentLogin" class="waves-effect navItems">{{ naam }}</a>
                 </li>
                 <!-- TODO: add delay, om het effect af te spelen -->
             </ul>
@@ -57,6 +54,7 @@
     <div id="StudentQuiz" class="row">
         <div id="QuizScherm" class="col s8 m8 l8 offset-s2 offset-l2 offset-m2 z-depth-4">
         </div>
+        <div id="paginateller">1/7</div>
         <div class="col s8 m6 l4 offset-s2 offset-l6">
             <div class="waves-effect waves-light btn" id="btnVolgende">Volgende</div>
         </div>

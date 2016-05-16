@@ -1,7 +1,7 @@
 # Python 2.x wordt hier gebruikt(meer bepaald 2.7)
 # Aangezien flask-mysqldb een bitch is om te installeren in Python 3.5
 # :)
-from flask import Flask, request, render_template, jsonify, make_response, session, abort, redirect, send_file
+from flask import Flask, request, render_template, jsonify, make_response, session, abort, redirect, send_file, json
 # Flask is het framework die we gaan gebruiken
 # Request is om de formvalues op te halen
 # render_template is om html-pagina's boven te halen
@@ -13,6 +13,8 @@ from flask.ext.mysqldb import MySQL
 # MySQL om met de MySQL database te spreken, komt vanuit de module flask-mysqldb
 # from flask.ext.login import current_user ###### Zet dit terug als er een fout komt
 # from flask.ext.session import Session ###### Zet dit terug als er een fout komt
+
+# Wil je debuggen? gebruik app.logger.warning("boodschap")
 
 app = Flask(__name__)
 
@@ -40,32 +42,19 @@ def loginStudent():
     mail = request.form['mail'];
     paswoord = request.form['paswoord'];
     cur = mysql.connection.cursor()
-    cur.execute(''' SELECT STU_id FROM student WHERE STU_mail = '%s' AND STU_paswoord = '%s' ''' % (mail, paswoord))
+    cur.execute(''' SELECT STU_id, STU_voornaam, STU_achternaam FROM student WHERE STU_mail = '%s' AND STU_paswoord = '%s' ''' % (mail, paswoord))
     rv = cur.fetchone()
     if str(rv) != '()':
         session['student_logged_in'] = True
-        session['student_id'] = str(rv[0]).strip('(),') #id krijgt rare tekens
+        session['student_id'] = str(rv[0]).strip('(),')
+        session['student_voornaam'] = str(rv[1]).strip('(),')
+        app.logger.warning(session.get('student_voornaam'))
+        session['student_achternaam'] = str(rv[2]).strip('(),')
+        # studentnaam = str(rv[1]).strip('(),') + " " + str(rv[2]).strip('(),')
         return "1"
     else:
         session['student_logged_in'] = False
         return "0"
-
-## JSON voor de quiz meegeven
-@app.route('/belbintestjson')
-def belbintestjson():
-    return send_file("static/belbintest.json")
-
-## Student rol opslaan
-
-@app.route('/roltoevoegen', methods=['POST'])
-def roltoevoegen():
-    rol = request.form['rol'];
-    cur = mysql.connection.cursor()
-    studentid = str(session.get('student_id'))
-    cur.execute(''' UPDATE student SET STU_rol = '{0}' where STU_id = '{1}' '''.format(rol, studentid))
-    mysql.connection.commit()
-    return "1"
-
 
 ################ Docent login
 
@@ -95,11 +84,28 @@ def loginDocent():
 @app.route('/student/dashboard.html', methods=['GET', 'POST'])
 def studentdashboard():
     if session.get('student_logged_in') == True:
-        return render_template('student/dashboard.html')
+        naam = session.get('student_voornaam') + " " + session.get('student_achternaam')
+        return render_template('student/dashboard.html', naam=naam)
     else:
         return render_template('error405.html')
 
 ## Slaag de rol op voor de belbin test van de student
+
+@app.route('/roltoevoegen', methods=['POST'])
+def roltoevoegen():
+    rol = request.form['rol'];
+    cur = mysql.connection.cursor()
+    studentid = str(session.get('student_id'))
+    cur.execute(''' UPDATE student SET STU_rol = '{0}' where STU_id = '{1}' '''.format(rol, studentid))
+    mysql.connection.commit()
+    return "1"
+
+
+## JSON voor de quiz meegeven
+@app.route('/belbintestjson')
+def belbintestjson():
+    return send_file("static/belbintest.json")
+
 
 ############################ DOCENT
 ## Check of docent ingelogd is
@@ -132,7 +138,16 @@ def studenttoevoegen():
 def studentenbekijken():
     cur = mysql.connection.cursor()
     cur.execute(''' SELECT STU_voornaam, STU_achternaam, STU_klas, STU_mail, STU_rol FROM student ''')
-    return jsonify(data=cur.fetchall())
+    rows = [x for x in cur]
+    cols = [x[0] for x in cur.description]
+    studenten = []
+    for row in rows:
+        student = {}
+        for prop, val in zip(cols, row):
+            student[prop] = val
+        studenten.append(student)
+    studentenJSON = json.dumps(studenten)
+    return studentenJSON
 
 ############################# VARIA
 ## Als een gebruiker naar een andere plaats gaat

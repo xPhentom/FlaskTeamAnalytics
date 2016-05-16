@@ -48,8 +48,6 @@ $(document).ready(function() {
 
         });
 
-
-
     });
 
     $("#btnVolgende").on('click', function() {
@@ -58,6 +56,9 @@ $(document).ready(function() {
             if ($(".scherm" + i).css('display') == 'block') {
                 $(".scherm" + i).hide();
                 i++;
+                var j = i;
+                j++;
+                $("#paginateller").text(j + "/7")
                 $(".scherm" + i).show();
             };
             if (i === 6) {
