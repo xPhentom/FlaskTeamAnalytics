@@ -11,6 +11,7 @@ $(document).ready(function() {
     $("#dashboarddocent").show();
     $("#StudentToevoegen").hide();
     $("#studentbekijken").hide();
+    $("#groepenbewerken").hide();
 
     $("#TileStudentToevoegen").on('click', function() {
         $("#dashboarddocent").hide();
@@ -28,7 +29,7 @@ $(document).ready(function() {
             success: function(html) {
                 var rij = jQuery.parseJSON(html);
                 for (var i = 0; i < rij.length; i++) {
-                   $("#studentenlijst").append('<li> <div class="collapsible-header studentlijststyle"> ' + rij[i].STU_achternaam + ' ' + rij[i].STU_voornaam + '</i></div> <div class="collapsible-body"><p>klas: ' + rij[i].STU_klas + '</p> <p>mail: ' + rij[i].STU_mail + '</p> <p> rol: ' + rij[i].STU_rol + '</p></div></li>');
+                   $("#studentenlijst").append('<li> <div class="collapsible-header studentlijststyle"> ' + rij[i].STU_achternaam + ' ' + rij[i].STU_voornaam + '</i></div> <div class="collapsible-body"><p>mail: ' + rij[i].STU_mail + '</p> <p> rol: ' + rij[i].STU_rol + '</p></div></li>');
                 }
             }
         })
@@ -38,14 +39,14 @@ $(document).ready(function() {
 
     $("#btnStudentToevoegen").on('click', function() {
 
-        var voornaam, achternaam, mail, paswoord, klas, les = "";
+        var voornaam, achternaam, mail, paswoord, school = "";
 
         voornaam = $("#voornaam").val();
         achternaam = $("#achternaam").val();
         mail = $("#mail").val();
         paswoord = $("#paswoord").val();
-        klas = $("#klas").val();
-        les = $("#les").val();
+        school = $("#school").val();
+
 
         $.ajax({
             type: "POST",
@@ -55,8 +56,7 @@ $(document).ready(function() {
                 achternaam: achternaam,
                 paswoord: paswoord,
                 mail: mail,
-                klas: klas,
-                les: les
+                school: school
             },
 
             success: function(html) {
@@ -64,11 +64,82 @@ $(document).ready(function() {
                 $("#achternaam").val('');
                 $("#mail").val('');
                 $("#paswoord").val('');
-                $("#klas").val('');
-                $("#les").val('');
+                $("#school").val('');
                 Materialize.toast('Student is toegevoegd aan de databank', 3000, 'rounded');
             }
         });
 
     });
+
+    $("#TileGroepenBewerken").on('click', function(){
+
+      $("#dashboarddocent").hide();
+      $("#groepenbewerken").show();
+
+      $.ajax({
+        type: "GET",
+        url: "/studentengroepenopvragen",
+        success: function(html){
+          var rij = jQuery.parseJSON(html);
+
+          for (var i = 0; i < rij.length; i++) {
+            if($("#" + rij[i].GRO_naam).length != 0){
+                console.log("Groep bestaat al");
+            } else {
+                $("#groepenlijst").prepend('<ul id="' + rij[i].GRO_naam + '" class="collection with-header groepslijst "><li class="collection-header groepslijst"><h4>' + rij[i].GRO_naam + '</h4></lu>');
+            }
+          }
+
+          console.log(rij[1]);
+        }
+      })
+
+      $.ajax({
+          type: "POST",
+          url: "/studentenbekijken",
+          data: {},
+          success: function(html) {
+              var rij = jQuery.parseJSON(html);
+              for (var i = 0; i < rij.length; i++) {
+                if (rij[i].STU_rol == null) {
+                  $("#lijstmetstudenten").append('<div class="chip" id = "' + rij[i].STU_id.toString() +'">  ' + rij[i].STU_achternaam + ' ' + rij[i].STU_voornaam + '</div><br>');
+                } else {
+                  $("#lijstmetstudenten").append('<div class="chip" id = "' + rij[i].STU_id.toString() + '">  ' + rij[i].STU_achternaam + ' ' + rij[i].STU_voornaam + ' -- ' + rij[i].STU_rol + '</div><br>');
+                }
+              }
+              $(".chip").draggable();
+          }
+      })
+
+    })
+
+    $("#GroepToevoegenAanLijst").on('click', function(){
+      var groepsnaam = prompt("Voer de naam in voor de groep", "Groepsnaam");
+      console.log(groepsnaam);
+
+      $("#groepenlijst").prepend('<ul class="collection with-header groepslijst "><li class="collection-header groepslijst"><h4>' + groepsnaam + '</h4></lu>'); //</li><li class="collection-item">test</li>
+      $(".collection").droppable({
+        drop: function (event, ui){
+          $( this ).append((ui.draggable).text() + "<br>");
+
+          var studentid = $(ui.draggable).attr('id');
+
+          var groep =  $( this ).find("h4").text() //Aangezien de titel in een groep in h4 staat
+
+          $.ajax({
+            type:"POST",
+            url:"/studentaangroeptoevoegen",
+            data:{
+              groep: groep,
+              studentid: studentid
+            },
+            success: function(html) {
+                Materialize.toast('Student is toegevoegd aan zijn groep', 3000, 'rounded');
+          }
+        })
+          $( ui.draggable ).remove();
+        }
+      })
+    })
+
 });

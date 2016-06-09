@@ -33,20 +33,6 @@ a:visited {
     width: 150px;
     text-align: center;
 }
-body{
-  background-color: #263238;
-  color:white;
-}
-
-nav{
-  background-color: #454560;
-}
-
-.nav-wrapper img{
-  height: 56px;
-  margin-left: 10px;
->>>>>>> origin/master
-}
 
 /*Variable design*/
 
@@ -108,9 +94,18 @@ nav{
 
 #btnStudentToevoegen {
     float: right;
-    margin-right: 5vw;
+    clear:both;
 }
 
+
+/*Groepen bewerken*/
+.collection .collection-item{
+  background-color: #2f3345;
+}
+
+.collection.with-header .collection-header{
+  background-color: #2f3345;
+}
 /*Studentpaginas*/
 
 #QuizScherm, #QuizResultaatScherm {
@@ -158,4 +153,14 @@ nav{
   background-color: #2f3345;
   height: 100%;
   margin-top: 10%;
+}
+
+
+/*Groepen bewerken*/
+.collection-header{
+  background-color: #2f3345;
+}
+
+.groepslijst{
+  background-color: #2f3345;
 }

@@ -36,7 +36,7 @@
         <div id="TileStudenBekijken" class="dashboardtiles valign-wrapper col s10 m4 l4 offset-s1 offset-l2 offset-m2 z-depth-4 waves-effect">
             <p class="dashboardtilestekst">Studenten bekijken</p>
         </div>
-        <div class="dashboardtiles valign-wrapper col s10 m4 l4 offset-s1 offset-l1 offset-m1 z-depth-4 waves-effect">
+        <div id="TileGroepenBewerken" class="dashboardtiles valign-wrapper col s10 m4 l4 offset-s1 offset-l1 offset-m1 z-depth-4 waves-effect">
             <p class="dashboardtilestekst">Groepen bewerken</p>
         </div>
         <div class="dashboardtiles valign-wrapper col s10 m4 l4 offset-s1 offset-l2 offset-m2 z-depth-4 waves-effect">
@@ -45,37 +45,22 @@
     </div>
 
     <div id="StudentToevoegen" class="row infaden">
-        <form class="col s12">
+        <form class="col s10 offset-s1 m8 offset-m4 l6 offset-l3">
           <div class="row">
-            <div class="input-field col s6">
+            <div class="input-field col s6 m6 l6">
               <input placeholder="Voornaam" id="voornaam" type="text" class="validate">
-
             </div>
-            <div class="input-field col s6">
+            <div class="input-field col s6 m6 l6">
               <input placeholder="Achternaam" id="achternaam" type="text" class="validate">
-
             </div>
           </div>
           <div class="row">
-            <div class="input-field col s12">
-              <input placeholder="Paswoord" id="mail" type="email" class="validate">
-
-            </div>
+              <input placeholder="Mail" id="mail" type="email" class="validate">
           </div>
           <div class="row">
-            <div class="input-field col s12">
-              <input placeholder="Mail" id="paswoord" type="password" class="validate">
-
-            </div>
+              <input placeholder="Paswoord" id="paswoord" type="password" class="validate">
           </div>
-          <div class="input-field col s6">
-            <input placeholder="Klas" id="klas" type="text" class="validate">
-
-          </div>
-          <div class="input-field col s6">
-            <input placeholder="Les" id="les" type="text" class="validate">
-
-          </div>
+            <input placeholder="School" id="school" type="text" class="validate">
             <a id="btnStudentToevoegen" class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">add</i></a>
         </form>
       </div>
@@ -88,8 +73,17 @@
 </div>
 </div>
 
+<div data-role = "page" id = "groepenbewerken">
+  <div class="row">
+  <div id="lijstmetstudenten"></div>
+  <div id="groepenlijst" class="col s5 m5 l5 offset-s6 offset-m6 offset-l6" ></div>
+  <a id="GroepToevoegenAanLijst" class="waves-effect waves-light btn">Groep toevoegen</a>
+</div>
+</div>
+
     <!--Import jQuery voor materialize.js-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/docentdashboardscript.js') }}"></script>
 </body>

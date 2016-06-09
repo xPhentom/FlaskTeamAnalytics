@@ -124,20 +124,19 @@ def studenttoevoegen():
     achternaam = request.form['achternaam'];
     paswoord = request.form['paswoord'];
     mail = request.form['mail'];
-    klas = request.form['klas'];
-    les = request.form['les'];
+    school = request.form['school'];
 
     cur = mysql.connection.cursor()
-    cur.execute(" INSERT INTO student (STU_voornaam, STU_achternaam, STU_mail, STU_paswoord, STU_klas, STU_les) VALUES ('%s', '%s', '%s', '%s', '%s', '%s') " % (voornaam, achternaam, paswoord, mail, klas, les))
+    cur.execute(" INSERT INTO student (STU_voornaam, STU_achternaam, STU_mail, STU_paswoord, STU_school) VALUES ('%s', '%s', '%s', '%s', '%s') " % (voornaam, achternaam, mail, paswoord, school))
     mysql.connection.commit() # Is nodig voor inserts en updates, wat da wel vrij logisch klinkt als je het gevonden hebt, maar hoyl f*ck duurt het lang om dees te vinden
     return "done"
 
 
 ## Laat docent info van de student zien
-@app.route('/studentenbekijken', methods=['GET', 'POST']) # Klinkt vrij tot zeer pedo
+@app.route('/studentenbekijken', methods=['GET', 'POST'])
 def studentenbekijken():
     cur = mysql.connection.cursor()
-    cur.execute(''' SELECT STU_voornaam, STU_achternaam, STU_klas, STU_mail, STU_rol FROM student ''')
+    cur.execute(''' SELECT STU_id, STU_voornaam, STU_achternaam, STU_school, STU_rol FROM student ''')
     rows = [x for x in cur]
     cols = [x[0] for x in cur.description]
     studenten = []
@@ -149,6 +148,30 @@ def studentenbekijken():
     studentenJSON = json.dumps(studenten)
     return studentenJSON
 
+
+@app.route('/studentengroepenopvragen', methods=['GET'])
+def studentengroepenopvragen():
+    cur = mysql.connection.cursor()
+    cur.execute(''' SELECT GRO_naam, GRO_lidnaam FROM groep ''')
+    rows = [x for x in cur]
+    cols = [x[0] for x in cur.description]
+    groepen = []
+    for row in rows:
+        groep = {}
+        for prop, val in zip(cols, row):
+            groep[prop] = val
+        groepen.append(groep)
+    groepenJSON = json.dumps(groepen)
+    return groepenJSON
+
+@app.route('/studentaangroeptoevoegen', methods=['POST'])
+def studentaangroeptoevoegen():
+    groepsnaam = request.form['groep'];
+    studentid = request.form['studentid'];
+    cur = mysql.connection.cursor()
+    cur.execute(" INSERT INTO groep (GRO_naam, GRO_lidnaam) VALUES ('%s', '%s') " % (groepsnaam, studentid))
+    mysql.connection.commit() # Is nodig voor inserts en updates, wat da wel vrij logisch klinkt als je het gevonden hebt, maar hoyl f*ck duurt het lang om dees te vinden
+    return "done"
 ############################# VARIA
 ## Als een gebruiker naar een andere plaats gaat
 
