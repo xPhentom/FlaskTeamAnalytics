@@ -152,7 +152,7 @@ def studentenbekijken():
 @app.route('/studentengroepenopvragen', methods=['GET'])
 def studentengroepenopvragen():
     cur = mysql.connection.cursor()
-    cur.execute(''' SELECT GRO_naam, GRO_lidnaam FROM groep ''')
+    cur.execute(''' SELECT g.GRO_naam, s.STU_voornaam, s.STU_achternaam, s.STU_rol, s.STU_id  FROM groep g INNER JOIN student s on g.GRO_lidnaam = s.STU_id ''')
     rows = [x for x in cur]
     cols = [x[0] for x in cur.description]
     groepen = []
