@@ -12,21 +12,23 @@
 </head>
 
 <body>
-  <nav>
+    <nav>
 
-    <div class="nav-wrapper">
-    <div id="logoclick"><img id = "logo" class="brand-logo" alt="logo" src="{{ url_for('static', filename='logo.png') }}"></div>
-    <ul class="right nav-mobile hide-on-med-and-down">
-      <li><div id="gotoStudentLogin" class="waves-effect navItems">Student</a></li>
-      <li><div id="gotoDocentLogin" class="waves-effect navItems">Docent</a></li><!-- TODO: add delay, om het effect af te spelen -->
-    </ul>
-    <ul id="slide-out" class="side-nav z-depth-4">
-      <li><a href="student/index.html" class="SideNavItems waves-effect"><b>Student</b></a></li>
-      <li><a href="docent/index.html" class="SideNavItems waves-effect"><b>Docent</b></a></li>
-    </ul>
-    <a href="#" data-activates="slide-out" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
-  </div>
-</nav>
+        <div class="nav-wrapper">
+            <div id="logoclick"><img id="logo" class="brand-logo" alt="logo" src="{{ url_for('static', filename='logo.png') }}"></div>
+            <ul class="right nav-mobile hide-on-med-and-down">
+                <li>
+                    <div id="gotoStudentLogin" class="waves-effect navItems">{{ naam }}</a>
+                </li>
+                <!-- TODO: add delay, om het effect af te spelen -->
+            </ul>
+            <ul id="slide-out" class="side-nav z-depth-4">
+                <li><a href="student/index.html" class="SideNavItems waves-effect"><b>Student</b></a></li>
+                <li><a href="docent/index.html" class="SideNavItems waves-effect"><b>Docent</b></a></li>
+            </ul>
+            <a href="#" data-activates="slide-out" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+    </nav>
 
 
     <div id="dashboarddocent" class="row">
@@ -39,47 +41,56 @@
         <div id="TileGroepenBewerken" class="dashboardtiles valign-wrapper col s10 m4 l4 offset-s1 offset-l1 offset-m1 z-depth-4 waves-effect">
             <p class="dashboardtilestekst">Groepen bewerken</p>
         </div>
-        <div class="dashboardtiles valign-wrapper col s10 m4 l4 offset-s1 offset-l2 offset-m2 z-depth-4 waves-effect">
+        <div id="TileGroepenBekijken" class="dashboardtiles valign-wrapper col s10 m4 l4 offset-s1 offset-l2 offset-m2 z-depth-4 waves-effect">
             <p class="dashboardtilestekst">Groepen bekijken</p>
         </div>
     </div>
 
     <div id="StudentToevoegen" class="row infaden">
         <form class="col s10 offset-s1 m8 offset-m4 l6 offset-l3">
-          <div class="row">
-            <div class="input-field col s6 m6 l6">
-              <input placeholder="Voornaam" id="voornaam" type="text" class="validate">
+            <div class="row">
+                <div class="input-field col s6 m6 l6">
+                    <input placeholder="Voornaam" id="voornaam" type="text" class="validate">
+                </div>
+                <div class="input-field col s6 m6 l6">
+                    <input placeholder="Achternaam" id="achternaam" type="text" class="validate">
+                </div>
             </div>
-            <div class="input-field col s6 m6 l6">
-              <input placeholder="Achternaam" id="achternaam" type="text" class="validate">
+            <div class="row">
+                <input placeholder="Mail" id="mail" type="email" class="validate">
             </div>
-          </div>
-          <div class="row">
-              <input placeholder="Mail" id="mail" type="email" class="validate">
-          </div>
-          <div class="row">
-              <input placeholder="Paswoord" id="paswoord" type="password" class="validate">
-          </div>
+            <div class="row">
+                <input placeholder="Paswoord" id="paswoord" type="password" class="validate">
+            </div>
             <input placeholder="School" id="school" type="text" class="validate">
             <a id="btnStudentToevoegen" class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">add</i></a>
         </form>
-      </div>
+    </div>
 
 
-<div data-role="page" id = "studentbekijken">
-  <div class="row">
-  <ul class="collapsible popout col s10 m8 l8 offset-s1 offset-l2 offset-m2" id="studentenlijst" data-collapsible="accordion"><!-- Wordt opgevuld door dashboardscript.js en studentbekijken.php -->
-  </ul>
-</div>
-</div>
+    <div data-role="page" id="studentbekijken">
+        <div class="row">
+            <ul class="collapsible popout col s10 m8 l8 offset-s1 offset-l2 offset-m2" id="studentenlijst" data-collapsible="accordion">
+                <!-- Wordt opgevuld door dashboardscript.js en studentbekijken.php -->
+            </ul>
+        </div>
+    </div>
 
-<div data-role = "page" id = "groepenbewerken">
-  <div class="row">
-  <div id="lijstmetstudenten"></div>
-  <div id="groepenlijst" class="col s5 m5 l5 offset-s6 offset-m6 offset-l6" ></div>
-  <a id="GroepToevoegenAanLijst" class="waves-effect waves-light btn">Groep toevoegen</a>
-</div>
-</div>
+    <div data-role="page" id="groepenbewerken">
+        <div class="row">
+            <div id="lijstmetstudenten"></div>
+            <div id="groepenlijst" class="col s5 m5 l5 offset-s6 offset-m6 offset-l6"></div>
+            <a id="GroepToevoegenAanLijst" class="waves-effect waves-light btn">Groep toevoegen</a>
+        </div>
+    </div>
+
+    <div data-role="page" id="groepenbekijken">
+        <div class="row">
+            <ul class="collapsible popout col s10 m8 l8 offset-s1 offset-l2 offset-m2" id="groepenophalenlijst" data-collapsible="accordion">
+                <!-- Wordt opgevuld door dashboardscript.js en studentbekijken.php -->
+            </ul>
+        </div>
+    </div>
 
     <!--Import jQuery voor materialize.js-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -87,4 +98,5 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/docentdashboardscript.js') }}"></script>
 </body>
+
 </html>

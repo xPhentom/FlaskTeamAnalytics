@@ -12,6 +12,7 @@ $(document).ready(function() {
     $("#StudentToevoegen").hide();
     $("#studentbekijken").hide();
     $("#groepenbewerken").hide();
+    $("#groepenbekijken").hide();
 
     $("#TileStudentToevoegen").on('click', function() {
         $("#dashboarddocent").hide();
@@ -141,7 +142,7 @@ $(document).ready(function() {
                 var rij = jQuery.parseJSON(html);
                 for (var i = 0; i < rij.length; i++) {
                     console.log(AlGebruikteStudenten);
-                    if ( AlGebruikteStudenten.indexOf(rij[i].STU_id) < 0) {
+                    if (AlGebruikteStudenten.indexOf(rij[i].STU_id) < 0) {
                         if (rij[i].STU_rol == null) {
                             $("#lijstmetstudenten").append('<div class="chip" id = "' + rij[i].STU_id.toString() + '">  ' + rij[i].STU_achternaam + ' ' + rij[i].STU_voornaam + '</div><br>');
                         } else {
@@ -181,6 +182,36 @@ $(document).ready(function() {
                     }
                 })
                 $(ui.draggable).remove();
+            }
+        })
+    })
+
+    $("#TileGroepenBekijken").on('click', function() {
+        $("#groepenbekijken").show();
+        $("#dashboarddocent").hide();
+
+        $.ajax({
+            type: 'GET',
+            url: "/beoordelingenophalen",
+            success: function(html) {
+                var rij = jQuery.parseJSON(html);
+
+                for (var i = 0; i < rij.length; i++) {
+
+                    console.log(rij[i]);
+                    if ($("#" + rij[i].BEO_groep).length == 0)
+                        $("#groepenophalenlijst").append('<li id="' + rij[i].BEO_groep + '"> <div class="collapsible-header studentlijststyle"> ' + rij[i].BEO_groep + '</div></i>');
+
+                    if ($("#" + rij[i].BEO_groep + " #" + rij[i].STU_id).length == 0)
+                        $("#" + rij[i].BEO_groep).append('<div id="' + rij[i].STU_id + '" class="collapsible-body">Student: ' + rij[i].STU_voornaam + ' ' + rij[i].STU_achternaam + '<br> Gemiddelde punten: <div class="' + rij[i].BEO_groep + ' ' + rij[i].STU_id + 'punten"></div> <br> Commentaar: <div class="' + rij[i].BEO_groep + ' ' + rij[i].STU_id + 'commentaar"> </div></div></li>');
+
+                    if (rij[i].BEO_commentaar != "")
+                        $("." + rij[i].BEO_groep + '.' + rij[i].STU_id + "commentaar").append(rij[i].BEO_commentaar + "<br>");
+
+                    $("#" + rij[i].BEO_groep + " #" + rij[i].STU_id).append("<br>");
+
+
+                }
             }
         })
     })

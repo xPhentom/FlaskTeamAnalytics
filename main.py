@@ -64,10 +64,13 @@ def loginDocent():
     mail = request.form['mail'];
     paswoord = request.form['paswoord'];
     cur = mysql.connection.cursor()
-    cur.execute(''' SELECT DOC_id FROM docent WHERE DOC_mail = '%s' AND DOC_paswoord = '%s' ''' % (mail, paswoord))
+    cur.execute(''' SELECT DOC_id, DOC_voornaam, DOC_achternaam FROM docent WHERE DOC_mail = '%s' AND DOC_paswoord = '%s' ''' % (mail, paswoord))
     rv = cur.fetchone()
     if str(rv) != '()':
         session['docent_logged_in'] = True
+        session['docent_id'] = str(rv[0]).strip('(),')
+        session['docent_voornaam'] = str(rv[1]).strip('(),')
+        session['docent_achternaam'] = str(rv[2]).strip('(),')
         return "1"
     else:
         session['docent_logged_in'] = False
@@ -104,7 +107,7 @@ def roltoevoegen():
 @app.route('/groepsledenophalen', methods=['GET'])
 def groepsledenophalen():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT s.STU_id, s.STU_voornaam, s.STU_achternaam, g.GRO_naam FROM student s INNER JOIN groep g on STU_id = GRO_lidnaam WHERE g.GRO_naam = (SELECT GRO_naam FROM groep WHERE GRO_lidnaam = '%s')" % (session['student_id']))
+    cur.execute("SELECT s.STU_id, s.STU_voornaam, s.STU_achternaam, g.GRO_naam FROM student s INNER JOIN groep g on STU_id = GRO_lidnaam WHERE g.GRO_naam = (SELECT GRO_naam FROM groep WHERE GRO_lidnaam = '%s') AND s.STU_id <> '%s'" % (session['student_id'], session['student_id']))
     rows = [x for x in cur]
     cols = [x[0] for x in cur.description]
     groepsleden = []
@@ -122,11 +125,13 @@ def beoordelingopslaan():
         punten = request.form['punten'];
         beoordeelde = request.form['beoordeelde'];
         commentaar = request.form['commentaar'];
+        groep = request.form['groep'];
 
         cur = mysql.connection.cursor()
-        cur.execute(" INSERT INTO beoordeling (BEO_beoordeler, BEO_punt, BEO_beoordeelde, BEO_commentaar) VALUES ('%s', '%s', '%s', '%s') " % (session['student_id'], punten, beoordeelde, commentaar))
+        cur.execute(" INSERT INTO beoordeling (BEO_beoordeler, BEO_punt, BEO_beoordeelde, BEO_commentaar, BEO_groep) VALUES ('%s', '%s', '%s', '%s', '%s') " % (session['student_id'], punten, beoordeelde, commentaar, groep))
         mysql.connection.commit() # Is nodig voor inserts en updates, wat da wel vrij logisch klinkt als je het gevonden hebt, maar hoyl f*ck duurt het lang om dees te vinden
         return "done"
+
 
 ## JSON voor de quiz meegeven
 @app.route('/belbintestjson')
@@ -140,7 +145,8 @@ def belbintestjson():
 @app.route('/docent/dashboard.html', methods=['GET', 'POST'])
 def docentdashboard():
     if session.get('docent_logged_in') == True:
-        return render_template('docent/dashboard.html')
+        naam = session.get('docent_voornaam') + " " + session.get('docent_achternaam')
+        return render_template('docent/dashboard.html', naam=naam)
     else:
         abort(403)
 
@@ -199,6 +205,21 @@ def studentaangroeptoevoegen():
     cur.execute(" INSERT INTO groep (GRO_naam, GRO_lidnaam) VALUES ('%s', '%s') " % (groepsnaam, studentid))
     mysql.connection.commit() # Is nodig voor inserts en updates, wat da wel vrij logisch klinkt als je het gevonden hebt, maar hoyl f*ck duurt het lang om dees te vinden
     return "done"
+
+@app.route('/beoordelingenophalen', methods=['GET'])
+def beoordelingenophalen():
+    cur = mysql.connection.cursor()
+    cur.execute(''' SELECT b.BEO_punt, b.BEO_commentaar, b.BEO_groep, s.STU_voornaam, s.STU_achternaam, s.STU_id  FROM beoordeling b INNER JOIN student s on b.BEO_beoordeelde = s.STU_id ''')
+    rows = [x for x in cur]
+    cols = [x[0] for x in cur.description]
+    beoordelingen = []
+    for row in rows:
+        beoordeling = {}
+        for prop, val in zip(cols, row):
+            beoordeling[prop] = val
+        beoordelingen.append(beoordeling)
+    beoordelingJSON = json.dumps(beoordelingen)
+    return beoordelingJSON
 ############################# VARIA
 ## Als een gebruiker naar een andere plaats gaat
 
