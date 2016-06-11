@@ -9,7 +9,60 @@ $(document).ready(function() {
     /*Alles van Docent*/
     "use strict";
     $("#StudentQuiz").hide();
+    $("#groepbeoordelen").hide();
     $("#dashboardstudent").show();
+
+// ---- GROEP BEOORDELEN ----
+
+    $("#TileGroepBeoordelen").on('click', function(){
+      $("#dashboardstudent").hide();
+      $("#groepbeoordelen").show();
+
+      $.ajax({
+        type: 'GET',
+        url: '/groepsledenophalen',
+        dataType: 'json',
+        success: function(groepsjson){
+
+          var _len = groepsjson.length;
+          for(var i = 0; i < _len; i++){
+            if ($("#" + groepsjson[i].GRO_naam).length == 0){
+              $("#groepbeoordelen").append('<ul class="collection with-header col s8 m8 l6 offset-s2 offset-l3" id="' + groepsjson[i].GRO_naam + '" ></ul>');
+              $("#" + groepsjson[i].GRO_naam).append('<li class="collection-header"><h4>' + groepsjson[i].GRO_naam + '</h4></li>')
+            }
+            $("#" + groepsjson[i].GRO_naam).append('<li class="collection-item" id="' + groepsjson[i].STU_id + '">' + groepsjson[i].STU_voornaam + ' ' + groepsjson[i].STU_achternaam +'');
+            $("#" + groepsjson[i].GRO_naam).append('<p class = "range-field"><input type="range" id="' + groepsjson[i].STU_id +'beoordeling" min="0" max="10" /> </p>');
+            $("#" + groepsjson[i].GRO_naam).append('<div class="input-field" col s12"> <textarea id="textarea' + groepsjson[i].STU_id + '" class="materialize-textarea" length="500"></textarea><label for="textarea' + groepsjson[i].STU_id + '">Opmerking</label><br><br>')
+            $("#" + groepsjson[i].GRO_naam).append('<button style="float: right" class="btn waves-effect waves-light" id="' + groepsjson[i].STU_id +'versturen"> Opslaan </button>')
+            $("#" + groepsjson[i].GRO_naam).append('</li><br><br>')
+
+          }
+        }
+      })
+
+    })
+
+    // -------- Wordt getriggered als er op een dynamische knop gedrukt wordt
+    $('body').on('click', 'button', function() {
+        var beoordeeldeid = ($( this ).attr('id')).replace('versturen', '');
+        var opmerking = $("#textarea" + beoordeeldeid).val();
+        var punten = $("#" + beoordeeldeid + "beoordeling").val();
+        $.ajax({
+          type: 'POST',
+          url:'/beoordelingopslaan',
+          data: {
+            punten: punten,
+            beoordeelde: beoordeeldeid,
+            commentaar: opmerking
+          },
+          success: function(html) {
+              Materialize.toast('Uw beoordeling is opgeslagen', 3000, 'rounded');
+              console.log(html);
+          }
+        })
+    });
+
+// ---- QUIZ REGELEN ----
 
     $("#gotoStudentQuiz").on('click', function() {
         $("#dashboardstudent").hide();

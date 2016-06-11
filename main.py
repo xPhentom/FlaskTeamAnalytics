@@ -100,6 +100,33 @@ def roltoevoegen():
     mysql.connection.commit()
     return "1"
 
+## Leden van groepen laten zien waar student aan deelneemt
+@app.route('/groepsledenophalen', methods=['GET'])
+def groepsledenophalen():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT s.STU_id, s.STU_voornaam, s.STU_achternaam, g.GRO_naam FROM student s INNER JOIN groep g on STU_id = GRO_lidnaam WHERE g.GRO_naam = (SELECT GRO_naam FROM groep WHERE GRO_lidnaam = '%s')" % (session['student_id']))
+    rows = [x for x in cur]
+    cols = [x[0] for x in cur.description]
+    groepsleden = []
+    for row in rows:
+        groepslid = {}
+        for prop, val in zip(cols, row):
+            groepslid[prop] = val
+        groepsleden.append(groepslid)
+    groepsledenJSON = json.dumps(groepsleden)
+    return groepsledenJSON
+
+## Beoordeling Opslaan
+@app.route('/beoordelingopslaan', methods=['POST'])
+def beoordelingopslaan():
+        punten = request.form['punten'];
+        beoordeelde = request.form['beoordeelde'];
+        commentaar = request.form['commentaar'];
+
+        cur = mysql.connection.cursor()
+        cur.execute(" INSERT INTO beoordeling (BEO_beoordeler, BEO_punt, BEO_beoordeelde, BEO_commentaar) VALUES ('%s', '%s', '%s', '%s') " % (session['student_id'], punten, beoordeelde, commentaar))
+        mysql.connection.commit() # Is nodig voor inserts en updates, wat da wel vrij logisch klinkt als je het gevonden hebt, maar hoyl f*ck duurt het lang om dees te vinden
+        return "done"
 
 ## JSON voor de quiz meegeven
 @app.route('/belbintestjson')
