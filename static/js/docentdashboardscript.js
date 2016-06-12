@@ -210,8 +210,24 @@ $(document).ready(function() {
 
                     $("#" + rij[i].BEO_groep + " #" + rij[i].STU_id).append("<br>");
 
+                    var totaalpunten = 0;
+                    var totaalbeoordelingen = 0;
+
+                    for (var j = 0; j < rij.length; j++){
+                      if (rij[i].STU_id == rij[j].STU_id){
+                        totaalpunten += parseInt(rij[j].BEO_punt);
+                        totaalbeoordelingen += 1;
+                      }
+                      if (j == rij.length - 1){
+                        var gemiddeldescore = totaalpunten / totaalbeoordelingen;
+                        console.log(gemiddeldescore);
+                        console.log("." + rij[i].BEO_groep + " " + rij[i].STU_id + "punten");
+                        $("." + rij[i].BEO_groep + "." + rij[i].STU_id + "punten").html(gemiddeldescore);
+                      }
+                    }
 
                 }
+
             }
         })
     })

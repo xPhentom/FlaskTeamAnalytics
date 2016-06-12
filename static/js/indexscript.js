@@ -13,25 +13,25 @@ $(document).ready(function() {
     $("#StudentLogin").hide();
     $("#DocentLogin").hide();
 
-    $("logo").on('click', function() {
-
-        alert("test");
+    $("#logo").on('click', function() {
 
         $("#indextekst").show();
         $("#StudentLogin").hide();
         $("#DocentLogin").hide();
     });
 
-    $("#gotoDocentLogin").on('click', function() {
+    $("#gotoDocentLogin, #sidebarDocent").on('click', function() {
         $("#indextekst").hide();
         $("#DocentLogin").show();
         $(".navItems").hide();
+        $("#StudentLogin").hide();
     });
 
-    $("#gotoStudentLogin").on('click', function() {
+    $("#gotoStudentLogin, #sidebarStudent").on('click', function() {
         $("#indextekst").hide();
         $("#StudentLogin").show();
         $(".navItems").hide();
+        $("#DocentLogin").hide();
     });
 
     $('#btnLoginDocent').on('click', function() {

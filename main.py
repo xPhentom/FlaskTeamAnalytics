@@ -90,7 +90,7 @@ def studentdashboard():
         naam = session.get('student_voornaam') + " " + session.get('student_achternaam')
         return render_template('student/dashboard.html', naam=naam)
     else:
-        return render_template('error405.html')
+        abort(403)
 
 ## Slaag de rol op voor de belbin test van de student
 
